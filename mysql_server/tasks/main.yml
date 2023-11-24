@@ -38,6 +38,10 @@
     login_password: "{{ mysql_password }}"
     state: present
 
+- name: See the creds
+  debug:
+    msg: "{{ mysql_user }} created {{ mysql_db }} with {{ mysql_password }}"
+
 - name: Grant privileges to the user for the database
   mysql_user:
     name: "{{ mysql_user }}"

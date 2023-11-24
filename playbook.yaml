@@ -17,7 +17,7 @@
     - name: Setup MySQL Server
       include_role:
         role: mysql_server
-      # become: yes
+      become: True
       # include_role:
       #   name: mysql_server
       when: ansible_hostname.startswith('db')
