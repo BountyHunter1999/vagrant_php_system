@@ -1,0 +1,5 @@
+---
+# vars file for mysql_server
+mysql_db: "test1"
+mysql_username: "ash"
+mysql_password: "pokemon123"

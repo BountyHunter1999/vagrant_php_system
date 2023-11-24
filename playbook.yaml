@@ -1,0 +1,54 @@
+---
+- name: Server Setups and Test
+  hosts: all
+
+  # roles:
+  # #   - name: Setup Database Server
+  # #     hosts: db
+  # #     become: True
+  # #     role: mysql_server
+
+  #   - name: Setup PHP Server
+  #     hosts: app
+  #     become: True
+  #     role: php_server
+
+  tasks:
+    - name: Setup MySQL Server
+      include_role:
+        role: mysql_server
+      # become: yes
+      # include_role:
+      #   name: mysql_server
+      when: ansible_hostname.startswith('db')
+
+    # - name: Setup PHP Server
+    #   include_role:
+    #     name: php_server
+    #   become: True
+    #   when: ansible_hostname.startswith('app')
+
+    - name: See the inventory hostname
+      debug:
+        var: inventory_hostname
+
+    - name: See the ansible host
+      debug:
+        var: ansible_hostname
+
+    - name: Ensure destination directory exists
+      file:
+        path: /home/vagrant/sample # Replace with the desired destination directory path
+        state: directory
+      when: ansible_hostname.startswith('app')
+
+    - name: Test server connection
+      template:
+        src: ./sample/main.php
+        dest: /home/vagrant/sample/main.php
+      when: ansible_hostname.startswith('app')
+
+    - name: Execute PHP script
+      script: /home/vagrant/sample/main.php
+      become: True
+      when: ansible_hostname.startswith('app')
