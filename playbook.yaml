@@ -1,18 +1,6 @@
 ---
 - name: Server Setups and Test
   hosts: all
-  # become_user: vagrant
-
-  # roles:
-  #   - name: Setup Database Server
-  #     hosts: db
-  #     become: True
-  #     role: mysql_server
-
-  #   - name: Setup PHP Server
-  #     hosts: app
-  #     become: True
-  #     role: php_server
 
   tasks:
     - name: See the inventory hostname
@@ -23,7 +11,7 @@
       debug:
         var: ansible_hostname
 
-    - name: Setup DB server
+    - name: Setup php server
       import_role:
         name: php_server
       become: True

@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Application Server 1
     config.vm.define "app1" do |app|
         app.vm.hostname = "app1"
-            app.vm.synced_folder "./sample/", "/home/vagrant/", disabled: false
+            app.vm.synced_folder ".", "/vagrant/", disabled: true
         app.vm.network :private_network, ip: "192.168.56.4"
     end
 
@@ -31,6 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         db.vm.hostname = "db"
         db.vm.synced_folder ".", "/vagrant", disabled: true
         db.vm.network :private_network, ip: "192.168.56.6"
+        db.vm.network "forwarded_port", guest: 3306, host: 3306
     end
 
     # Controller Server 1, for windows w/o wls2 use
