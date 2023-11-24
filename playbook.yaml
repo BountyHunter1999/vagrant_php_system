@@ -1,12 +1,13 @@
 ---
 - name: Server Setups and Test
   hosts: all
+  # become_user: vagrant
 
   # roles:
-  # #   - name: Setup Database Server
-  # #     hosts: db
-  # #     become: True
-  # #     role: mysql_server
+  #   - name: Setup Database Server
+  #     hosts: db
+  #     become: True
+  #     role: mysql_server
 
   #   - name: Setup PHP Server
   #     hosts: app
@@ -14,20 +15,6 @@
   #     role: php_server
 
   tasks:
-    - name: Setup MySQL Server
-      include_role:
-        role: mysql_server
-      become: True
-      # include_role:
-      #   name: mysql_server
-      when: ansible_hostname.startswith('db')
-
-    # - name: Setup PHP Server
-    #   include_role:
-    #     name: php_server
-    #   become: True
-    #   when: ansible_hostname.startswith('app')
-
     - name: See the inventory hostname
       debug:
         var: inventory_hostname
@@ -36,13 +23,25 @@
       debug:
         var: ansible_hostname
 
+    - name: Setup DB server
+      import_role:
+        name: php_server
+      become: True
+      when: ansible_hostname.startswith('app')
+
+    - name: Setup DB server
+      import_role:
+        name: mysql_server
+      become: True
+      when: ansible_hostname.startswith('db')
+
     - name: Ensure destination directory exists
       file:
         path: /home/vagrant/sample # Replace with the desired destination directory path
         state: directory
       when: ansible_hostname.startswith('app')
 
-    - name: Test server connection
+    - name: Copy Files
       template:
         src: ./sample/main.php
         dest: /home/vagrant/sample/main.php

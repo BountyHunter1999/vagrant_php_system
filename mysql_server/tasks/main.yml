@@ -5,19 +5,11 @@
   apt:
     update_cache: yes
 
-- name: Install necessary python driver
-  apt:
-    name:
-      - python3-pip
-      - pymysql
-    update_cache: true
-    state: latest
-
 - name: Install MySQL Server
   apt:
-    name: 
+    name:
       - mysql-server
-      - python-mysqldb
+      - python3-pymysql
     state: present
 
 - name: Start MySQL Service
@@ -26,24 +18,25 @@
     state: started
     enabled: yes
 
-- name: Create MySQL database
-  mysql_db:
-    name: "{{ mysql_db }}"
-    state: present
-
-- name: Create MySQL user
-  mysql_user:
-    name: "{{ mysql_user }}"
-    password: "{{ mysql_password }}"
-    login_password: "{{ mysql_password }}"
-    state: present
-
 - name: See the creds
   debug:
     msg: "{{ mysql_user }} created {{ mysql_db }} with {{ mysql_password }}"
 
-- name: Grant privileges to the user for the database
+# SELECT user, host FROM mysql.user;
+# mysql -u vagrant -h localhost -p
+- name: Create MySQL user
   mysql_user:
     name: "{{ mysql_user }}"
-    priv: "{{ mysql_db }}.*:ALL"
+    password: "{{ mysql_password }}"
+    priv: "*.*:ALL"
+    host: "localhost"
+    login_password: "{{ mysql_password }}"
     state: present
+    login_unix_socket: /var/run/mysqld.mysqld.sock
+
+- name: Create MySQL database
+  mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_password }}"

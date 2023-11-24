@@ -16,7 +16,13 @@
   apt_repository:
     repo: ppa:ondrej/php
     state: present
-    update_cache: yes
+    update_cache: True
+
+- name: Update the packages
+  apt:
+    name: software-properties-common
+    update_cache: True
+    state: latest
 
 - name: install packages
   apt:
@@ -25,8 +31,8 @@
       - mcrypt
       - nginx
       # - php7.4-cli
-      - php8.1-fpm
       - php8.1
+      - php8.1-fpm
       - composer
       - sqlite3
       # - php8.1-extension_name
